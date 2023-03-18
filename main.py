@@ -1,28 +1,20 @@
-def sift_down(n, arr, swaps):
-    i = 0
-    while 2*i+1 < n:
-        j = i
-        if arr[2*i+1] < arr[j]:
-            j = 2*i+1
-        if 2*i+2 < n and arr[2*i+2] < arr[j]:
-            j = 2*i+2
-        if i != j:
-            swaps.append((i, j))
-            arr[i], arr[j] = arr[j], arr[i]
-            i = j
-        else:
-            break
+import heapq
 
-def build_heap(n, arr):
-    swaps = []
-    for i in range(n//2, -1, -1):
-        sift_down(n, arr, swaps, i)
-    return swaps
+n, m = map(int, input().split())
+times = list(map(int, input().split()))
 
-n = int(input())
-arr = list(map(int, input().split()))
-swaps = build_heap(n, arr)
+# Initialize the heap with the starting times of each thread
+threads = [(0, i) for i in range(n)]
 
-print(len(swaps))
-for i, j in swaps:
-    print(i, j)
+# Process each job
+for i in range(m):
+    # Get the next job time from the input
+    job_time = times[i]
+    # Get the next available thread from the heap
+    start_time, thread_id = heapq.heappop(threads)
+    # Output the thread and start time for this job
+    print(thread_id, start_time)
+    # Update the start time for this thread
+    start_time += job_time
+    # Add the thread back to the heap with its updated start time
+    heapq.heappush(threads, (start_time, thread_id))
